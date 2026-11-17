@@ -1,0 +1,46 @@
+digraph UseCase {
+  rankdir=LR; fontname="DejaVu Sans"; nodesep=0.35; ranksep=1.3;
+  node [fontname="DejaVu Sans", fontsize=12];
+  edge [fontname="DejaVu Sans", fontsize=10];
+  labelloc=t; label="Диаграмма прецедентов: сервис бронирования номеров «Сладкие сны»";
+
+  guest [shape=plain, label=<<TABLE BORDER="0" CELLBORDER="0"><TR><TD><FONT POINT-SIZE="34">&#9786;</FONT></TD></TR><TR><TD><B>Гость</B></TD></TR></TABLE>>];
+  admin [shape=plain, label=<<TABLE BORDER="0" CELLBORDER="0"><TR><TD><FONT POINT-SIZE="34">&#9786;</FONT></TD></TR><TR><TD><B>Администратор</B></TD></TR></TABLE>>];
+
+  subgraph cluster_sys {
+    label="Система бронирования"; style=rounded; color="#555555"; fontsize=13;
+    node [shape=ellipse, style=filled, fillcolor="#E8F7EF", color="#24B771"];
+    uc1 [label="Просматривать\nконтент сайта"];
+    uc2 [label="Искать номер\nв каталоге"];
+    uc3 [label="Фильтровать номера\n(категория, цена, места)"];
+    uc4 [label="Забронировать номер"];
+    uc5 [label="Указать данные\nбронирования\n(ФИО, телефон, e-mail)"];
+    uc6 [label="Выбрать даты заезда\nи выезда"];
+    uc7 [label="Проверить доступность\nномера на даты"];
+
+    node [fillcolor="#E8F0FE", color="#0d6efd"];
+    a0 [label="Войти в панель\nуправления"];
+    a1 [label="Просматривать\nвсе заявки"];
+    a2 [label="Изменить статус заявки\n(Одобрена / Отклонена)"];
+    a3 [label="Уточнить данные\nпо телефону"];
+    a4 [label="Вести учёт заявок\n(в т.ч. удалять)"];
+    a5 [label="Управлять каталогом\nномеров"];
+    a6 [label="Добавить номер"];
+    a7 [label="Редактировать номер"];
+    a8 [label="Удалить номер"];
+  }
+
+  guest -> uc1; guest -> uc2; guest -> uc4;
+  admin -> a0; admin -> a1; admin -> a2; admin -> a4; admin -> a5;
+
+  uc3 -> uc2 [style=dashed, arrowhead=open, label="«extend»"];
+  uc4 -> uc5 [style=dashed, arrowhead=open, label="«include»"];
+  uc4 -> uc6 [style=dashed, arrowhead=open, label="«include»"];
+  uc6 -> uc7 [style=dashed, arrowhead=open, label="«include»"];
+  a1 -> a0 [style=dashed, arrowhead=open, label="«include»"];
+  a2 -> a1 [style=dashed, arrowhead=open, label="«include»"];
+  a3 -> a2 [style=dashed, arrowhead=open, label="«extend»"];
+  a6 -> a5 [style=dashed, arrowhead=open, label="«extend»"];
+  a7 -> a5 [style=dashed, arrowhead=open, label="«extend»"];
+  a8 -> a5 [style=dashed, arrowhead=open, label="«extend»"];
+}

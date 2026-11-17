@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Панель администратора{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap align-items-center">
+    <h1>Панель администратора</h1>
+    <span class="fs-5">Заявок: {{ bookings|length }}</span>
+</div>
+<div class="d-flex justify-content-around flex-wrap align-items-start">
+    {% for b in bookings %}
+    <div class="card" data-booking="{{ b.id }}">
+        <div class="card-body">
+            <span class="badge status-{{ {'Новая': 'new', 'Одобрена': 'ok', 'Отклонена': 'no'}[b.status] }} mb-2">{{ b.status }}</span>
+            <h5>Фамилия: {{ b.last_name }}</h5>
+            <h5>Имя: {{ b.first_name }}</h5>
+            <h5>Телефон: {{ b.phone }}</h5>
+            <h5>Email: {{ b.email }}</h5>
+            <h5>Номер: {{ b.category }}, {{ b.number }}</h5>
+            <ul class="list-group">
+                <li class="list-group-item">Дата заезда: {{ b.check_in_fmt }}</li>
+                <li class="list-group-item">Дата выезда: {{ b.check_out_fmt }}</li>
+            </ul>
+        </div>
+        <div class="d-grid gap-2">
+            {% for action, label, cls in [('approve', 'Одобрить', 'success'), ('reject', 'Отклонить', 'secondary'), ('delete', 'Удалить', 'danger')] %}
+            {% if not (action == 'approve' and b.status == 'Одобрена') and not (action == 'reject' and b.status == 'Отклонена') %}
+            <form method="post" action="{{ url_for('booking_action', booking_id=b.id, action=action) }}"
+                  class="inline-form" {% if action == 'delete' %}data-confirm="Удалить заявку?"{% endif %}>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-{{ cls }} w-100" type="submit">{{ label }}</button>
+            </form>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <p class="my-5">Заявок пока нет.</p>
+    {% endfor %}
+</div>
+{% endblock %}
