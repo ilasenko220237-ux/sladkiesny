@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap align-items-center">
+    <h1>Вход</h1>
+</div>
+{% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+<form class="my-2" novalidate method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="my-2">
+        <label for="username" class="form-label">Логин</label>
+        <input type="text" class="form-control" id="username" name="username" autocomplete="username">
+    </div>
+    <div class="my-2">
+        <label for="password" class="form-label">Пароль</label>
+        <input type="password" class="form-control" id="password" name="password" autocomplete="current-password">
+    </div>
+    <div class="d-grid gap-2">
+        <button class="btn btn-primary" type="submit">Войти</button>
+    </div>
+</form>
+{% endblock %}

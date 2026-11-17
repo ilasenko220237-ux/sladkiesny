@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Бронирование номера{% endblock %}
+{% macro field(name, label, value, cols, placeholder='') %}
+<div class="{{ cols }}">
+    <label for="{{ name }}" class="form-label">{{ label }}</label>
+    <input type="text" class="form-control{% if name in errors %} is-invalid{% elif form %} is-valid{% endif %}"
+           id="{{ name }}" name="{{ name }}" value="{{ value }}" placeholder="{{ placeholder }}" autocomplete="off">
+    {% if name in errors %}<div class="invalid-feedback">{{ errors[name] }}</div>{% endif %}
+</div>
+{% endmacro %}
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap align-items-center">
+    <h1>Бронирование номера</h1>
+    <span class="fs-5">{{ room.category }}, номер {{ room.number }} — {{ '{:,}'.format(room.price).replace(',', ' ') }} ₽ / сутки</span>
+</div>
+{% if errors %}
+<div class="alert alert-danger" role="alert">Заявка не отправлена: исправьте отмеченные поля.</div>
+{% endif %}
+<form class="row g-3 my-2" novalidate method="post" id="order-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {{ field('first_name', 'Имя', form.first_name, 'col-md-4') }}
+    {{ field('last_name', 'Фамилия', form.last_name, 'col-md-4') }}
+    {{ field('phone', 'Телефон', form.phone, 'col-md-4', '+7(___)___-__-__') }}
+    {{ field('email', 'Почта', form.email, 'col-md-6') }}
+    {{ field('check_in', 'Дата заезда', form.check_in, 'col-md-3', 'ДД.ММ.ГГГГ') }}
+    {{ field('check_out', 'Дата выезда', form.check_out, 'col-md-3', 'ДД.ММ.ГГГГ') }}
+    <div class="col-12">
+        <div id="calendar" data-today="{{ today }}" data-busy='{{ busy|tojson }}'></div>
+        <div class="calendar-legend">
+            <span class="legend-box free"></span> свободно
+            <span class="legend-box busy"></span> занято (бронь одобрена)
+            <span class="legend-box sel"></span> выбрано
+        </div>
+        {% if busy_text %}
+        <p class="text-body-secondary mt-2 mb-0">Номер занят: {{ busy_text|join('; ') }}</p>
+        {% endif %}
+    </div>
+    <div class="d-grid gap-2">
+        <button class="btn btn-primary" type="submit">Отправить заявку</button>
+    </div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.slim.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.inputmask.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+<script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+{% endblock %}

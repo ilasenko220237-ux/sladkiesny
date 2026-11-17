@@ -1,0 +1,49 @@
+digraph Classes {
+  rankdir=TB; fontname="DejaVu Sans"; nodesep=0.6; ranksep=0.9; splines=true;
+  labelloc=t; label="Диаграмма классов: сервис бронирования номеров «Сладкие сны»";
+  node [shape=plain, fontname="DejaVu Sans", fontsize=11];
+  edge [fontname="DejaVu Sans", fontsize=10, arrowhead=none];
+
+  Category [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFFF">
+    <TR><TD BGCOLOR="#E8F7EF"><B>Category</B><BR/>(категория номера)</TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">- id: int<BR ALIGN="LEFT"/>- name: string<BR ALIGN="LEFT"/>  «Стандартный | Студия | Люкс»<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  Room [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFFF">
+    <TR><TD BGCOLOR="#E8F7EF"><B>Room</B><BR/>(номер)</TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">- id: int<BR ALIGN="LEFT"/>- number: string<BR ALIGN="LEFT"/>- price: int  (руб./сутки)<BR ALIGN="LEFT"/>- places: int<BR ALIGN="LEFT"/>- area: int  (кв. м)<BR ALIGN="LEFT"/>- image: string<BR ALIGN="LEFT"/></TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">+ getAmenities(): Amenity[]<BR ALIGN="LEFT"/>+ isFree(from, to): bool<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  Amenity [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFFF">
+    <TR><TD BGCOLOR="#E8F7EF"><B>Amenity</B><BR/>(удобство)</TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">- id: int<BR ALIGN="LEFT"/>- name: string<BR ALIGN="LEFT"/>  «кондиционер, ТВ, холодильник…»<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  Booking [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFFF">
+    <TR><TD BGCOLOR="#FFF3CD"><B>Booking</B><BR/>(заявка на бронирование)</TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">- id: int<BR ALIGN="LEFT"/>- firstName: string<BR ALIGN="LEFT"/>- lastName: string<BR ALIGN="LEFT"/>- phone: string  (+7(XXX)XXX-XX-XX)<BR ALIGN="LEFT"/>- email: string<BR ALIGN="LEFT"/>- checkIn: date  (ДД.ММ.ГГГГ)<BR ALIGN="LEFT"/>- checkOut: date  (ДД.ММ.ГГГГ)<BR ALIGN="LEFT"/>- status: BookingStatus<BR ALIGN="LEFT"/>- createdAt: datetime<BR ALIGN="LEFT"/></TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">+ validate(): bool<BR ALIGN="LEFT"/>+ overlaps(other): bool<BR ALIGN="LEFT"/>+ approve()<BR ALIGN="LEFT"/>+ reject()<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  Status [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFFF">
+    <TR><TD BGCOLOR="#EEEEEE">«enumeration»<BR/><B>BookingStatus</B></TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">Новая  (ожидает рассмотрения)<BR ALIGN="LEFT"/>Одобрена  (подтверждено)<BR ALIGN="LEFT"/>Отклонена  (отклонено администратором)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  Guest [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFFF">
+    <TR><TD BGCOLOR="#E8F0FE"><B>Guest</B><BR/>(гость)</TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">+ viewSite()<BR ALIGN="LEFT"/>+ searchRooms(filter): Room[]<BR ALIGN="LEFT"/>+ createBooking(data): Booking<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  Admin [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFFF">
+    <TR><TD BGCOLOR="#E8F0FE"><B>Administrator</B><BR/>(администратор)</TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">- login: string<BR ALIGN="LEFT"/>- passwordHash: string<BR ALIGN="LEFT"/></TD></TR><HR/>
+    <TR><TD ALIGN="LEFT">+ signIn(login, password): bool<BR ALIGN="LEFT"/>+ viewBookings(): Booking[]<BR ALIGN="LEFT"/>+ approveBooking(id)<BR ALIGN="LEFT"/>+ rejectBooking(id)<BR ALIGN="LEFT"/>+ deleteBooking(id)<BR ALIGN="LEFT"/>+ addRoom(room) / editRoom(room) / deleteRoom(id)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  {rank=same; Guest; Admin}
+  {rank=same; Category; Room; Amenity}
+  {rank=same; Booking; Status}
+
+  Category -> Room [headlabel="  1..*", taillabel="1  ", label=" содержит "];
+  Room -> Amenity [headlabel="  *", taillabel="*  ", label=" имеет "];
+  Room -> Booking [headlabel="  *", taillabel="1  ", label=" бронируется "];
+  Booking -> Status [arrowhead=vee, headlabel="1", taillabel="*", style=solid, label=" статус "];
+  Guest -> Booking [arrowhead=vee, style=dashed, label=" создаёт "];
+  Admin -> Booking [arrowhead=vee, style=dashed, label=" модерирует "];
+  Admin -> Room [arrowhead=vee, style=dashed, label=" управляет "];
+}

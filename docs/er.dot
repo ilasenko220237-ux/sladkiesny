@@ -1,0 +1,12 @@
+digraph ER {
+  rankdir=LR; fontname="DejaVu Sans"; nodesep=0.5; ranksep=1.0;
+  labelloc=t; label="Схема базы данных (SQLite)";
+  node [shape=plain, fontname="DejaVu Sans", fontsize=11];
+  edge [fontname="DejaVu Sans", fontsize=10, arrowhead=crow, arrowtail=none, dir=both, arrowtail=tee];
+  categories [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD BGCOLOR="#E8F7EF"><B>categories</B></TD></TR><HR/><TR><TD ALIGN="LEFT">PK id<BR ALIGN="LEFT"/>name (UNIQUE)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  rooms [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD BGCOLOR="#E8F7EF"><B>rooms</B></TD></TR><HR/><TR><TD ALIGN="LEFT">PK id<BR ALIGN="LEFT"/>FK category_id<BR ALIGN="LEFT"/>number (UNIQUE)<BR ALIGN="LEFT"/>price, places, area<BR ALIGN="LEFT"/>image<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  amenities [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD BGCOLOR="#E8F7EF"><B>amenities</B></TD></TR><HR/><TR><TD ALIGN="LEFT">PK id<BR ALIGN="LEFT"/>name (UNIQUE)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  room_amenities [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD BGCOLOR="#EEEEEE"><B>room_amenities</B></TD></TR><HR/><TR><TD ALIGN="LEFT">PK,FK room_id<BR ALIGN="LEFT"/>PK,FK amenity_id<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  bookings [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD BGCOLOR="#FFF3CD"><B>bookings</B></TD></TR><HR/><TR><TD ALIGN="LEFT">PK id<BR ALIGN="LEFT"/>FK room_id<BR ALIGN="LEFT"/>first_name, last_name<BR ALIGN="LEFT"/>phone, email<BR ALIGN="LEFT"/>check_in, check_out<BR ALIGN="LEFT"/>status (Новая/Одобрена/Отклонена)<BR ALIGN="LEFT"/>created_at<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  categories -> rooms; rooms -> room_amenities; amenities -> room_amenities; rooms -> bookings;
+}

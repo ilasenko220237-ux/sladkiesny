@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Каталог номеров{% endblock %}
+{% block content %}
+<form method="get" action="{{ url_for('catalog') }}" class="filter-form d-flex justify-content-between flex-wrap align-items-center">
+    <h1>Каталог номеров</h1>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                data-bs-auto-close="outside" aria-expanded="false">
+            Категории{% if selected %} ({{ selected|length }}){% endif %}
+        </button>
+        <ul class="dropdown-menu">
+            {% for c in categories %}
+            <li class="px-3 py-1">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="category" value="{{ c.id }}"
+                           id="cat{{ c.id }}" {% if c.id in selected %}checked{% endif %}>
+                    <label class="form-check-label" for="cat{{ c.id }}">{{ c.name }}</label>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <button class="btn btn-primary my-1" type="submit">Применить</button>
+        <a class="btn btn-danger my-1" href="{{ url_for('catalog') }}">Сбросить фильтр</a>
+    </div>
+</form>
+<div class="d-flex justify-content-around flex-wrap align-items-center">
+    {% for r in rooms %}
+    <div class="card" data-room="{{ r.id }}">
+        <img src="{{ url_for('static', filename=r.image) }}" class="card-img-top" alt="{{ r.category }}">
+        <div class="card-body">
+            <h3>Категория: {{ r.category }}</h3>
+            <h5>Номер {{ r.number }}</h5>
+            <h5>Цена: {{ '{:,}'.format(r.price).replace(',', ' ') }} ₽ / сутки</h5>
+            <h5>Характеристики:</h5>
+            <ul class="list-group">
+                <li class="list-group-item">Мест: {{ r.places }}, площадь: {{ r.area }} м²</li>
+                {% for a in r.amenities %}
+                <li class="list-group-item">{{ a }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('order', room_id=r.id) }}" class="btn btn-success">Забронировать</a>
+        </div>
+    </div>
+    {% else %}
+    <p class="my-5">Номера не найдены.</p>
+    {% endfor %}
+</div>
+{% endblock %}
